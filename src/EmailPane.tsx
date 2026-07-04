@@ -32,7 +32,11 @@ export function EmailPane({ html, width, label }: Props) {
       const a = document.createElement('a')
       a.href = dataUrl
       a.download = `email-${label.toLowerCase().replace(/\s+/g, '-')}.png`
+      document.body.appendChild(a)
       a.click()
+      document.body.removeChild(a)
+    } catch (err) {
+      console.error('PNG export failed:', err)
     } finally {
       setSaving(false)
     }
