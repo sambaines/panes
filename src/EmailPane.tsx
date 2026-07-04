@@ -10,8 +10,15 @@ export function EmailPane({ html, width }: Props) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!ref.current) return
-    ref.current.innerHTML = prepareEmailHtml(html)
+    const inject = () => {
+      if (ref.current) ref.current.innerHTML = prepareEmailHtml(html)
+    }
+
+    inject()
+
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    mq.addEventListener('change', inject)
+    return () => mq.removeEventListener('change', inject)
   }, [html])
 
   return (
