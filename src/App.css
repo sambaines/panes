@@ -1,0 +1,99 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Controls bar ─────────────────────────────────── */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e4e4e4;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.controls__divider {
+  width: 1px;
+  height: 20px;
+  background: #e4e4e4;
+  margin: 0 8px;
+}
+
+/* ── Width picker ─────────────────────────────────── */
+
+.width-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.width-picker__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-width: 52px;
+}
+
+.width-picker__buttons {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.width-picker__buttons button {
+  padding: 4px 11px;
+  border: none;
+  border-right: 1px solid #ddd;
+  background: #fff;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  line-height: 1.6;
+  transition: background 0.1s;
+}
+
+.width-picker__buttons button:last-child {
+  border-right: none;
+}
+
+.width-picker__buttons button:hover:not(.active) {
+  background: #f5f5f5;
+}
+
+.width-picker__buttons button.active {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* ── Panes ────────────────────────────────────────── */
+
+.panes {
+  display: flex;
+  gap: 40px;
+  padding: 24px;
+  align-items: flex-start;
+}
+
+.pane-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pane-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
