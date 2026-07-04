@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { EmailPane } from './EmailPane'
 import { WidthPicker } from './WidthPicker'
 import { DropZone } from './DropZone'
@@ -14,6 +14,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [desktopWidth, setDesktopWidth] = useState(800)
   const [mobileWidth, setMobileWidth] = useState(375)
+  const [captureMode, setCaptureMode] = useState(false)
 
   const handleLoad = useCallback(async (raw: string | ArrayBuffer) => {
     setLoading(true)
@@ -31,14 +32,24 @@ function App() {
   const handleReset = () => {
     setParsedHtml(null)
     setError(null)
+    setCaptureMode(false)
   }
+
+  useEffect(() => {
+    if (!captureMode) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setCaptureMode(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [captureMode])
 
   if (!parsedHtml) {
     return <DropZone onLoad={handleLoad} loading={loading} error={error} />
   }
 
   return (
-    <div className="app">
+    <div className={`app${captureMode ? ' app--capture' : ''}`}>
       <header className="controls">
         <WidthPicker
           label="Desktop"
@@ -56,6 +67,12 @@ function App() {
         <div className="controls__spacer" />
         <button className="controls__reset" onClick={handleReset}>
           Load another
+        </button>
+        <button
+          className="controls__capture"
+          onClick={() => setCaptureMode(true)}
+        >
+          Capture mode
         </button>
       </header>
 
