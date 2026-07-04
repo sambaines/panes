@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spike: Figma iframe capture test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      padding: 32px;
+    }
+
+    .instructions {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .instructions h1 { font-size: 18px; margin-bottom: 12px; }
+    .instructions ol { padding-left: 20px; line-height: 1.8; font-size: 14px; color: #333; }
+    .instructions li { margin-bottom: 4px; }
+
+    .result-label {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .pane-wrapper {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .pane {
+      display: flex;
+      flex-direction: column;
+    }
+
+    iframe {
+      border: 2px solid #333;
+      border-radius: 4px;
+      display: block;
+    }
+
+    .caption {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+    }
+
+    /* Top-level DOM reference block */
+    .top-level-block {
+      background: #fff9c4;
+      border: 2px solid #f0c040;
+      border-radius: 4px;
+      padding: 24px;
+      width: 400px;
+    }
+
+    .top-level-block h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .top-level-block p {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .top-level-block .cta {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: #0052cc;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="instructions">
+    <h1>Spike: does the Figma extension capture sandboxed iframes?</h1>
+    <ol>
+      <li>Open the <strong>Figma Chrome extension</strong> and click <strong>"Capture page"</strong> (or "Select element" aimed at the iframe below).</li>
+      <li>Check Figma: does the <strong>iframe content</strong> appear as editable layers, or is it an empty/blank box?</li>
+      <li>Also check: does the <strong>yellow reference block</strong> (top-level DOM) appear correctly?</li>
+      <li>Record the result — it determines whether the main app uses iframes or top-level DOM rendering.</li>
+    </ol>
+  </div>
+
+  <div class="pane-wrapper">
+
+    <!-- Test 1: sandboxed iframe with srcdoc -->
+    <div class="pane">
+      <div class="result-label">Test A — sandboxed iframe (srcdoc)</div>
+      <iframe
+        width="400"
+        height="300"
+        sandbox="allow-same-origin"
+        srcdoc="<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: Georgia, serif; background: #ffffff; margin: 0; padding: 24px; }
+  h1 { font-size: 22px; color: #1a1a1a; margin-bottom: 8px; }
+  p { font-size: 15px; color: #444; line-height: 1.6; }
+  .logo { width: 120px; height: 40px; background: #0052cc; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 20px; }
+  .cta { display: inline-block; margin-top: 16px; padding: 10px 20px; background: #0052cc; color: #fff; border-radius: 4px; font-size: 14px; font-weight: 600; text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class=&quot;logo&quot;>ACME Co.</div>
+  <h1>Your order is confirmed!</h1>
+  <p>Hi Sam, thanks for your purchase. Your order #12345 has been confirmed and will ship within 2 business days.</p>
+  <a class=&quot;cta&quot; href=&quot;#&quot;>View order details</a>
+</body>
+</html>"
+      ></iframe>
+      <div class="caption">PASS if Figma captures the blue header, text, and button as layers.<br>FAIL if it captures an empty box.</div>
+    </div>
+
+    <!-- Test 2: top-level DOM (baseline — should always work) -->
+    <div class="pane">
+      <div class="result-label">Test B — top-level DOM (baseline)</div>
+      <div class="top-level-block">
+        <h2>Your order is confirmed!</h2>
+        <p>Hi Sam, thanks for your purchase. Your order #12345 has been confirmed and will ship within 2 business days.</p>
+        <a class="cta" href="#">View order details</a>
+      </div>
+      <div class="caption">This should ALWAYS be captured correctly.<br>Confirms the extension is working at all.</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
