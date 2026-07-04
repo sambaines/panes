@@ -25,6 +25,25 @@
   margin: 0 8px;
 }
 
+.controls__spacer {
+  flex: 1;
+}
+
+.controls__reset {
+  padding: 5px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.controls__reset:hover {
+  background: #f5f5f5;
+}
+
 /* ── Width picker ─────────────────────────────────── */
 
 .width-picker {
@@ -72,60 +91,6 @@
 .width-picker__buttons button.active {
   background: #1a1a1a;
   color: #fff;
-}
-
-/* ── Controls extras ─────────────────────────────── */
-
-.controls__spacer {
-  flex: 1;
-}
-
-.controls__reset {
-  padding: 5px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 12px;
-  color: #555;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.controls__reset:hover {
-  background: #f5f5f5;
-}
-
-.controls__capture {
-  padding: 5px 12px;
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  background: #1a1a1a;
-  font-size: 12px;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.controls__capture:hover {
-  background: #333;
-}
-
-/* ── Capture mode ─────────────────────────────────── */
-
-.app--capture {
-  background: #fff;
-}
-
-.app--capture .controls {
-  display: none;
-}
-
-.app--capture .pane-label {
-  display: none;
-}
-
-.app--capture .panes {
-  padding: 0;
 }
 
 /* ── Drop zone ────────────────────────────────────── */
@@ -205,10 +170,57 @@
   flex-shrink: 0;
 }
 
+.pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: var(--pane-width);
+}
+
 .pane-label {
   font-size: 11px;
   font-weight: 600;
   color: #aaa;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.pane-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.1s, border-color 0.1s, background 0.1s;
+  flex-shrink: 0;
+}
+
+.pane-save:hover {
+  color: #1a1a1a;
+  border-color: #aaa;
+  background: #f5f5f5;
+}
+
+.pane-save:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pane-save__spinner {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #ccc;
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
