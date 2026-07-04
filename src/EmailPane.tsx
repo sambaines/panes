@@ -28,7 +28,13 @@ export function EmailPane({ html, width, label }: Props) {
     if (!ref.current || saving) return
     setSaving(true)
     try {
-      const dataUrl = await toPng(ref.current, { cacheBust: true })
+      const dataUrl = await toPng(ref.current, {
+        cacheBust: true,
+        skipFonts: true,
+        // Substitute a transparent pixel for any CORS-blocked or failed image
+        // rather than rejecting the whole capture
+        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQAABjE+ibYAAAAASUVORK5CYII=',
+      })
       const a = document.createElement('a')
       a.href = dataUrl
       a.download = `email-${label.toLowerCase().replace(/\s+/g, '-')}.png`
