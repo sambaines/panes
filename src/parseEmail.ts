@@ -22,7 +22,7 @@ export async function parseEmail(raw: string | ArrayBuffer): Promise<ParsedEmail
   for (const attachment of email.attachments ?? []) {
     if (!attachment.contentId || !attachment.content) continue
     const cid = attachment.contentId.replace(/^<|>$/g, '')
-    const dataUri = `data:${attachment.mimeType};base64,${toBase64(attachment.content)}`
+    const dataUri = `data:${attachment.mimeType};base64,${toBase64(attachment.content as Uint8Array)}`
     html = html.replaceAll(`cid:${cid}`, dataUri)
   }
 
