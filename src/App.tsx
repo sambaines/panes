@@ -1,44 +1,41 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { EmailPane } from './EmailPane'
 import { WidthPicker } from './WidthPicker'
+import { DropZone } from './DropZone'
+import { parseEmail } from './parseEmail'
 import './App.css'
 
 const DESKTOP_PRESETS = [800, 1024, 1280]
 const MOBILE_PRESETS = [375, 390, 414]
 
-const SAMPLE_HTML = `<!DOCTYPE html>
-<html>
-<head>
-<style>
-  body { font-family: Georgia, serif; background: #f9f9f9; margin: 0; padding: 0; }
-  .header { background: #0052cc; padding: 20px 24px; }
-  .header h2 { color: #fff; margin: 0; font-size: 18px; font-family: sans-serif; }
-  .body { padding: 24px; }
-  h1 { font-size: 22px; color: #1a1a1a; margin: 0 0 8px; }
-  p { font-size: 15px; color: #444; line-height: 1.6; margin: 0 0 16px; }
-  .cta { display: inline-block; padding: 10px 20px; background: #0052cc; color: #fff;
-         border-radius: 4px; font-size: 14px; font-weight: 600; text-decoration: none; }
-  .footer { padding: 16px 24px; font-size: 12px; color: #aaa; border-top: 1px solid #eee; }
-  @media (max-width: 480px) {
-    .body { padding: 16px; }
-    h1 { font-size: 18px; }
-  }
-</style>
-</head>
-<body>
-  <div class="header"><h2>ACME Co.</h2></div>
-  <div class="body">
-    <h1>Your order is confirmed!</h1>
-    <p>Hi Sam, thanks for your purchase. Order #12345 will ship within 2 business days.</p>
-    <a class="cta" href="#">View order details</a>
-  </div>
-  <div class="footer">ACME Co. · 123 Main St · Unsubscribe</div>
-</body>
-</html>`
-
 function App() {
+  const [parsedHtml, setParsedHtml] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [desktopWidth, setDesktopWidth] = useState(800)
   const [mobileWidth, setMobileWidth] = useState(375)
+
+  const handleLoad = useCallback(async (raw: string | ArrayBuffer) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const { html } = await parseEmail(raw)
+      setParsedHtml(html)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to parse email')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const handleReset = () => {
+    setParsedHtml(null)
+    setError(null)
+  }
+
+  if (!parsedHtml) {
+    return <DropZone onLoad={handleLoad} loading={loading} error={error} />
+  }
 
   return (
     <div className="app">
@@ -56,16 +53,20 @@ function App() {
           options={MOBILE_PRESETS}
           onChange={setMobileWidth}
         />
+        <div className="controls__spacer" />
+        <button className="controls__reset" onClick={handleReset}>
+          Load another
+        </button>
       </header>
 
       <main className="panes">
         <div className="pane-col">
           <div className="pane-label">Desktop — {desktopWidth}px</div>
-          <EmailPane html={SAMPLE_HTML} width={desktopWidth} />
+          <EmailPane html={parsedHtml} width={desktopWidth} />
         </div>
         <div className="pane-col">
           <div className="pane-label">Mobile — {mobileWidth}px</div>
-          <EmailPane html={SAMPLE_HTML} width={mobileWidth} />
+          <EmailPane html={parsedHtml} width={mobileWidth} />
         </div>
       </main>
     </div>
